@@ -1,7 +1,8 @@
-#include "hw_interface/easysym.h"
+#include "hw_interface/lcd_screen.h"
 
 int main(void) {
-    _print("Hello world!");
+    lcd_init();
+    lcd_print("Hello World!");
 
     return 0;
 }

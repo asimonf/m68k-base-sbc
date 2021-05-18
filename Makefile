@@ -5,6 +5,7 @@ TARGET_HEX  ?= $(PROJ_NAME).hex
 TARGET_BIN  ?= $(PROJ_NAME).bin
 TARGET_MAP  ?= $(PROJ_NAME).map
 TARGET_ASS  ?= $(PROJ_NAME).S
+TARGET_S68  ?= $(PROJ_NAME).S68
 
 TOOL_PREFIX := m68k-unknown-elf
 AS := ~/x-tools/$(TOOL_PREFIX)/bin/$(TOOL_PREFIX)-as
@@ -36,7 +37,11 @@ $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 	$(OBJCOPY) -O ihex $(BUILD_DIR)/$(TARGET_EXEC) $(BUILD_DIR)/$(TARGET_HEX)
 	$(OBJCOPY) -O binary $(BUILD_DIR)/$(TARGET_EXEC) $(BUILD_DIR)/$(TARGET_BIN)
+	$(OBJCOPY) -O binary --interleave=2 --byte=0 $(BUILD_DIR)/$(TARGET_EXEC) $(BUILD_DIR)/$(PROJ_NAME).even.bin
+	$(OBJCOPY) -O binary --interleave=2 --byte=1 $(BUILD_DIR)/$(TARGET_EXEC) $(BUILD_DIR)/$(PROJ_NAME).odd.bin
+	$(OBJCOPY) -O srec $(BUILD_DIR)/$(TARGET_EXEC) $(BUILD_DIR)/$(TARGET_S68)
 	$(OBJDUMP) -dC $(BUILD_DIR)/$(TARGET_EXEC) > $(BUILD_DIR)/$(TARGET_ASS)
+	
 
 # assembly
 $(BUILD_DIR)/%.s.o: %.s
